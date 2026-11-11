@@ -82,7 +82,7 @@ export const STRINGS = {
       "Cliente de solo lectura: lo único que se envía a la batería es la petición estándar de datos, cada 0,5 s.",
     footerDisclaimer:
       "Proyecto independiente, no afiliado al fabricante de ANT BMS. Úsalo bajo tu responsabilidad.",
-    footerUnverified: "Pendiente de verificar con una batería real.",
+    footerVerified: "Verificado con una batería real (ANT-BLE22AAUB).",
     footerSpecLink: "Especificación del protocolo",
     gaugeAria: "Nivel de carga",
   },
@@ -148,7 +148,7 @@ export const STRINGS = {
       "Read-only client: the only thing ever sent to the battery is the standard data request, every 0.5 s.",
     footerDisclaimer:
       "Independent project, not affiliated with the ANT BMS vendor. Use at your own risk.",
-    footerUnverified: "Not yet verified against a real battery.",
+    footerVerified: "Verified against a real battery (ANT-BLE22AAUB).",
     footerSpecLink: "Protocol specification",
     gaugeAria: "State of charge",
   },

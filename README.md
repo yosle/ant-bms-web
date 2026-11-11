@@ -89,10 +89,11 @@ ES/EN phrase tables aligned with the protocol's bit lists.
 - [x] Decoder ported from the reference implementation and verified against
   captured frames from real hardware.
 - [x] Demo mode, ES/EN i18n, PWA shell.
-- [ ] **End-to-end Web Bluetooth connection not yet verified against a real
-  battery** — the protocol itself is hardware-verified in the
-  [spec repo](https://github.com/yosle/ant-bms-ble), but
-  this client's BLE path still needs a field test. Reports welcome.
+- [x] **End-to-end Web Bluetooth connection verified against a real battery**
+  (ANT-BLE22AAUB, firmware 22AAUB00-240510A). Running a different model or
+  firmware? [Open a device
+  report](https://github.com/yosle/ant-bms-ble/blob/main/CONTRIBUTING.md#the-most-valuable-contribution-frames-from-your-bms)
+  — a few captured frames are enough.
 
 ## Protocol and terminal tools
 
