@@ -4,7 +4,7 @@ import { findFrames, decodeRealtime, POLL_INTERVAL_MS } from "./protocol.js";
 import { bluetoothSupport, AntBmsClient } from "./ble.js";
 import { DemoBattery } from "./demo.js";
 import {
-  detectLang, saveLang, t, formatMinutes,
+  LANGS, detectLang, saveLang, t, formatMinutes,
   SYSTEM_STATE_TEXT, BATTERY_TYPE_TEXT, DIS_MOS_TEXT, CH_MOS_TEXT, BALANCE_TEXT,
   PROTECT_TEXT, WARNING_TEXT, STATUS_WARNING_BITS, INFO_PROTECT_BITS,
 } from "./i18n.js";
@@ -395,11 +395,11 @@ function stopDemo() {
   }
 }
 
-function startDemo() {
+function startDemo(initialTick = 0) {
   state.client?.disconnect();
   stopDemo();
   state.demo ??= new DemoBattery();
-  state.demoTick = 0;
+  state.demoTick = initialTick;
   status(null);
   setMode("demo");
   const tick = () => {
@@ -469,13 +469,30 @@ function setLang(lang) {
 }
 
 function boot() {
+  // URL overrides — shareable demo links and deterministic screenshots:
+  //   ?demo[=tick]       start demo mode (optionally at a given cycle tick)
+  //   ?lang=es|en        force a language for this visit (not persisted)
+  //   ?theme=dark|light  force a theme for this visit
+  const params = new URLSearchParams(location.search);
+  const theme = params.get("theme");
+  if (theme === "dark" || theme === "light") {
+    document.documentElement.dataset.theme = theme;
+  }
+  const lang = params.get("lang");
+  if (LANGS.includes(lang)) state.lang = lang;
+
   applyStatic();
   initGauge();
   setMode("idle");
   $("btnLang").addEventListener("click", () => setLang(state.lang === "es" ? "en" : "es"));
   $("btnConnect").addEventListener("click", connect);
-  $("btnDemo").addEventListener("click", startDemo);
+  $("btnDemo").addEventListener("click", () => startDemo());
   $("btnDisconnect").addEventListener("click", disconnect);
+
+  if (params.has("demo")) {
+    const tick = parseInt(params.get("demo"), 10);
+    startDemo(Number.isFinite(tick) ? tick : 0);
+  }
 
   if (bluetoothSupport() !== "ok") {
     const warn = $("btWarning");

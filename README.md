@@ -10,7 +10,7 @@
 ![No build step](https://img.shields.io/badge/stack-vanilla%20JS%2C%20no%20build-blue.svg)
 ![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)
 
-*(screenshot / GIF pending)*
+![ANT BMS Monitor — desktop (dark, English) and mobile (light, Spanish)](docs/screens-framed.png)
 
 ## What is this?
 
@@ -52,6 +52,11 @@ python -m http.server 8000
 
 then open <http://localhost:8000>. Web Bluetooth requires a secure context:
 `localhost` is fine for development; anything else must be HTTPS.
+
+URL parameters: `?demo` jumps straight into demo mode (optionally at a cycle
+tick, `?demo=90`), `?lang=es|en` forces a language and `?theme=dark|light`
+forces a theme — handy for sharing and for screenshots
+(`node tools/shoot.mjs` regenerates the images in `docs/`).
 
 ## Read-only, by design
 
