@@ -42,6 +42,19 @@ humans —
 Plain HTML + CSS + vanilla JavaScript (ES modules). No framework, no build
 step. Installable as a PWA (manifest + basic service worker).
 
+## Does it work with my battery?
+
+It works with any lithium battery whose BMS is an **ANT BMS with Bluetooth** —
+the vehicle does not matter (e-motorcycle, electric tricycle, home solar
+bank…). Quick test: open the app and tap *Connect*. If your battery shows up as
+**`ANT-BLE…`**, you are set. If the official ANT app connects to it, so will
+this one.
+
+Not supported: lead-acid batteries, lithium packs with another BMS brand
+(JK/Jikong, Daly, JBD/Xiaoxiang, Seplos…), ANT boards without Bluetooth, and
+older ANT BMS on the legacy `AA 55` protocol. Details in
+[ant-bms-ble → Does it work with my battery?](https://github.com/yosle/ant-bms-ble#does-it-work-with-my-battery)
+
 ## Browser support
 
 Works on **Android and Windows in Chrome or Edge** (any Chromium browser with
