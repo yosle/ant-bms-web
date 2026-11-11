@@ -33,6 +33,12 @@ const SHOTS = [
     url: `${BASE}/tools/compose.html`,
     width: 1520, height: 960, dsf: 1.5, mobile: false, transparent: true,
   },
+  {
+    // GitHub social preview (Settings -> Social preview takes 1280x640).
+    out: "docs/social-preview.png",
+    url: `${BASE}/tools/social-preview.html`,
+    width: 1280, height: 640, dsf: 2, mobile: false,
+  },
 ];
 
 const CHROME =
