@@ -12,6 +12,9 @@
 
 ![ANT BMS Monitor — desktop (dark, English) and mobile (light, Spanish)](docs/screens-framed.png)
 
+**Try it live: <https://yosle.github.io/ant-bms-web/>** — no battery around?
+[Jump straight into the demo](https://yosle.github.io/ant-bms-web/?demo).
+
 ## What is this?
 
 ANT BMS batteries come with an official app that ships in Chinese by default and
