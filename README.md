@@ -15,6 +15,9 @@
 **Try it live: <https://yosle.github.io/ant-bms-web/>** — no battery around?
 [Jump straight into the demo](https://yosle.github.io/ant-bms-web/?demo).
 
+Built on **[ant-bms-ble](https://github.com/yosle/ant-bms-ble)**: the full
+protocol specification and a Python CLI for the same batteries.
+
 ## What is this?
 
 ANT BMS batteries come with an official app that ships in Chinese by default and
@@ -87,15 +90,21 @@ ES/EN phrase tables aligned with the protocol's bit lists.
   captured frames from real hardware.
 - [x] Demo mode, ES/EN i18n, PWA shell.
 - [ ] **End-to-end Web Bluetooth connection not yet verified against a real
-  battery** — the protocol itself is hardware-verified in the spec repo, but
+  battery** — the protocol itself is hardware-verified in the
+  [spec repo](https://github.com/yosle/ant-bms-ble), but
   this client's BLE path still needs a field test. Reports welcome.
 
-## Protocol
+## Protocol and terminal tools
 
 The full protocol specification (framing, CRC, the three frame layouts, every
 field, bit and register) lives in
 **[yosle/ant-bms-ble](https://github.com/yosle/ant-bms-ble)**, together with
 the reference Python decoder this one is ported from.
+
+Prefer a terminal, or need more than live data? The same repo ships the
+`antbms` CLI (`pip install ant-bms-ble`): this dashboard in your terminal
+(`antbms live`), a full settings and state backup (`antbms report`) and a
+CSV/JSONL logger (`antbms log`).
 
 ## Legal
 
