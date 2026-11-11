@@ -1,0 +1,18 @@
+{
+  "name": "ANT BMS Monitor",
+  "short_name": "ANT BMS",
+  "description": "Read-only Web Bluetooth monitor for ANT BMS batteries. Monitor de solo lectura para baterías con BMS ANT.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0d0d0d",
+  "theme_color": "#1c5cab",
+  "lang": "es",
+  "categories": ["utilities"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

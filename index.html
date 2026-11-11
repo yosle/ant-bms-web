@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ANT BMS Monitor</title>
+  <meta name="description" content="Read-only Web Bluetooth monitor for ANT BMS batteries. Monitor de solo lectura para baterías con BMS ANT.">
+  <meta name="theme-color" content="#f9f9f7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="1.5" y="7" width="18" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/>
+        <rect x="20.5" y="10" width="3" height="4" rx="1" fill="currentColor"/>
+        <rect x="4.5" y="10" width="8" height="4" rx="1" fill="currentColor"/>
+      </svg>
+      <span class="brand-name" data-i18n="appName">ANT BMS Monitor</span>
+      <span id="deviceName" class="device-name" hidden></span>
+      <span id="demoBadge" class="demo-badge" data-i18n="demoBadge" hidden>DEMO</span>
+    </div>
+    <div class="topbar-actions">
+      <button id="btnLang" class="btn btn-ghost" type="button" aria-label="Español / English">EN</button>
+      <button id="btnDisconnect" class="btn btn-outline" type="button" data-i18n="btnDisconnect" hidden>Desconectar</button>
+    </div>
+  </header>
+
+  <p id="statusLine" class="status-line" role="status" aria-live="polite" hidden></p>
+
+  <main>
+    <!-- Landing: shown while not connected -->
+    <section id="welcome" class="welcome">
+      <svg class="welcome-art" viewBox="0 0 120 64" aria-hidden="true">
+        <rect x="6" y="14" width="88" height="36" rx="8" fill="none" stroke="currentColor" stroke-width="4"/>
+        <rect x="98" y="26" width="10" height="12" rx="3" fill="currentColor"/>
+        <rect x="14" y="22" width="44" height="20" rx="4" class="welcome-art-fill"/>
+        <path d="M74 18 62 34h8l-4 12 12-16h-8z" class="welcome-art-bolt"/>
+      </svg>
+      <h1 data-i18n="welcomeTitle">Tu batería, en el navegador</h1>
+      <p class="lead" data-i18n="welcomeLead"></p>
+      <div class="welcome-actions">
+        <button id="btnConnect" class="btn btn-primary btn-big" type="button" data-i18n="btnConnect">Conectar batería</button>
+        <button id="btnDemo" class="btn btn-outline btn-big" type="button" data-i18n="btnDemo">Ver demo</button>
+      </div>
+      <p id="btWarning" class="note note-warn" hidden></p>
+      <p class="note" data-i18n="welcomeSupport"></p>
+      <p class="note note-lock">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h1zm2 0h6V7a3 3 0 0 0-6 0v3z" fill="currentColor"/></svg>
+        <span data-i18n="welcomeReadOnly"></span>
+      </p>
+    </section>
+
+    <!-- Dashboard: shown while connected or in demo mode -->
+    <section id="dashboard" class="dashboard" hidden>
+      <div class="grid">
+
+        <article class="card card-soc" id="socCard" data-level="good">
+          <div class="gauge-wrap">
+            <svg class="gauge" viewBox="0 0 200 180" role="img" id="gaugeSvg" aria-label="">
+              <path id="gaugeTrack" class="gauge-track" fill="none" stroke-linecap="round"/>
+              <path id="gaugeValue" class="gauge-value" fill="none" stroke-linecap="round"/>
+            </svg>
+            <div class="gauge-center">
+              <div class="soc-value"><span id="socValue">–</span><span class="soc-unit">%</span></div>
+              <div class="soc-label" id="socLabel" data-i18n="socLabel">nivel de carga</div>
+            </div>
+          </div>
+          <div class="state-chip" id="stateChip"><span id="stateIcon" class="state-icon" aria-hidden="true"></span><span id="stateText">—</span></div>
+          <dl class="soc-meta">
+            <div><dt data-i18n="sohLabel">Salud</dt><dd id="sohValue">–</dd></div>
+            <div><dt data-i18n="capacityLabel">Capacidad</dt><dd id="capValue">–</dd></div>
+            <div><dt data-i18n="chemistryLabel">Química</dt><dd id="chemValue">–</dd></div>
+          </dl>
+        </article>
+
+        <article class="card card-kpis">
+          <div class="kpi-row">
+            <div class="kpi">
+              <div class="kpi-label" data-i18n="kpiVoltage">Voltaje</div>
+              <div class="kpi-value"><span id="voltValue">–</span><span class="kpi-unit">V</span></div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label" data-i18n="kpiCurrent">Corriente</div>
+              <div class="kpi-value"><span id="currValue">–</span><span class="kpi-unit">A</span></div>
+              <div class="kpi-sub" id="currFlow"></div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label" data-i18n="kpiPower">Potencia</div>
+              <div class="kpi-value"><span id="powerValue">–</span><span class="kpi-unit" id="powerUnit">W</span></div>
+            </div>
+          </div>
+          <div class="remain" id="remainBlock" hidden>
+            <svg class="remain-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm.75-13h-1.5v5.56l4.35 2.61.77-1.28-3.62-2.17z" fill="currentColor"/></svg>
+            <div>
+              <div class="remain-label" id="remainLabel"></div>
+              <div class="remain-value" id="remainValue">–</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card card-cells">
+          <header class="card-head">
+            <h2><span data-i18n="cellsTitle">Celdas</span> <span id="cellCount" class="count"></span></h2>
+            <p class="cell-stats" id="cellStats"></p>
+          </header>
+          <div class="cells" id="cellsGrid"></div>
+        </article>
+
+        <article class="card card-temps">
+          <header class="card-head"><h2 data-i18n="tempsTitle">Temperaturas</h2></header>
+          <div class="temps" id="tempsGrid"></div>
+        </article>
+
+        <article class="card card-alarms">
+          <header class="card-head"><h2 data-i18n="statusTitle">Estado y alarmas</h2></header>
+          <div class="chips" id="statusChips"></div>
+          <ul class="alarms" id="alarmList" aria-live="polite"></ul>
+        </article>
+
+      </div>
+      <p class="note demo-note" id="demoNote" data-i18n="demoNote" hidden></p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p data-i18n="footerReadOnly"></p>
+    <p>
+      <span data-i18n="footerDisclaimer"></span>
+      <span data-i18n="footerUnverified"></span>
+      <a href="https://github.com/yosle/ant-bms-ble" target="_blank" rel="noopener" data-i18n="footerSpecLink">Especificación del protocolo</a>
+    </p>
+  </footer>
+
+  <noscript><p class="status-line">This app needs JavaScript. / Esta app necesita JavaScript.</p></noscript>
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

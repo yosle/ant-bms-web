@@ -1,0 +1,11 @@
+{
+  "name": "ant-bms-web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Zero-install Web Bluetooth viewer for ANT BMS batteries (read-only)",
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "serve": "python -m http.server 8000"
+  }
+}
