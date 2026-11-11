@@ -58,8 +58,8 @@ export const STRINGS = {
     estimatedTag: "estimado",
     stateFull: "Batería llena",
     cellsTitle: "Celdas",
-    minTag: "MÍN",
-    maxTag: "MÁX",
+    minTag: "mín",
+    maxTag: "máx",
     avgLabel: "media",
     diffLabel: "diferencia",
     balTooltip: "equilibrándose",
@@ -76,8 +76,8 @@ export const STRINGS = {
     chargeBlocked: "Carga bloqueada",
     dischargeBlocked: "Descarga bloqueada",
     chipCharger: "Cargador conectado",
-    protectionTag: "PROTECCIÓN",
-    warningTag: "AVISO",
+    protectionTag: "Protección",
+    warningTag: "Aviso",
     footerReadOnly:
       "Cliente de solo lectura: lo único que se envía a la batería es la petición estándar de datos, cada 0,5 s.",
     footerDisclaimer:
@@ -124,8 +124,8 @@ export const STRINGS = {
     estimatedTag: "estimated",
     stateFull: "Battery full",
     cellsTitle: "Cells",
-    minTag: "MIN",
-    maxTag: "MAX",
+    minTag: "min",
+    maxTag: "max",
     avgLabel: "average",
     diffLabel: "spread",
     balTooltip: "balancing",
@@ -142,8 +142,8 @@ export const STRINGS = {
     chargeBlocked: "Charging blocked",
     dischargeBlocked: "Discharging blocked",
     chipCharger: "Charger connected",
-    protectionTag: "PROTECTION",
-    warningTag: "WARNING",
+    protectionTag: "Protection",
+    warningTag: "Warning",
     footerReadOnly:
       "Read-only client: the only thing ever sent to the battery is the standard data request, every 0.5 s.",
     footerDisclaimer:

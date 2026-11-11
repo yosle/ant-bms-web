@@ -1,7 +1,9 @@
 /* Basic service worker: precache the app shell, network-first for
  * navigations (fresh shell when online), cache-first for static assets. */
 
-const CACHE = "antbms-web-v1";
+const CACHE = "antbms-web-v2";
+const FONT_CACHE = "antbms-fonts-v1";
+const FONT_ORIGINS = ["https://fonts.googleapis.com", "https://fonts.gstatic.com"];
 const ASSETS = [
   "./",
   "./index.html",
@@ -27,7 +29,11 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then((keys) =>
+        Promise.all(
+          keys.filter((k) => k !== CACHE && k !== FONT_CACHE).map((k) => caches.delete(k))
+        )
+      )
       .then(() => self.clients.claim())
   );
 });
@@ -35,7 +41,25 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET") return;
-  if (new URL(request.url).origin !== location.origin) return;
+  const origin = new URL(request.url).origin;
+
+  // Webfonts: cache-first so the app keeps its face offline after one visit.
+  if (FONT_ORIGINS.includes(origin)) {
+    event.respondWith(
+      caches.match(request).then(
+        (cached) =>
+          cached ||
+          fetch(request).then((res) => {
+            const copy = res.clone();
+            caches.open(FONT_CACHE).then((cache) => cache.put(request, copy));
+            return res;
+          })
+      )
+    );
+    return;
+  }
+
+  if (origin !== location.origin) return;
 
   if (request.mode === "navigate") {
     event.respondWith(

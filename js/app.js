@@ -54,26 +54,26 @@ function applyStatic() {
   $("btnLang").textContent = state.lang === "es" ? "EN" : "ES";
 }
 
-/* ---------- SOC gauge geometry (240° arc) ---------- */
+/* ---------- SOC gauge: a 10-segment battery ---------- */
 
-function polar(cx, cy, r, deg) {
-  const rad = (deg * Math.PI) / 180;
-  return `${(cx + r * Math.cos(rad)).toFixed(2)} ${(cy - r * Math.sin(rad)).toFixed(2)}`;
-}
+const SEGMENTS = 10;
+let gaugeSegs = [];
 
-let gaugeLen = 0;
 function initGauge() {
-  const d = `M ${polar(100, 94, 78, 210)} A 78 78 0 1 1 ${polar(100, 94, 78, -30)}`;
-  $("gaugeTrack").setAttribute("d", d);
-  const value = $("gaugeValue");
-  value.setAttribute("d", d);
-  gaugeLen = value.getTotalLength();
-  value.style.strokeDasharray = `0 ${gaugeLen}`;
+  const body = $("battBody");
+  body.textContent = "";
+  gaugeSegs = [];
+  for (let i = 0; i < SEGMENTS; i++) {
+    const seg = document.createElement("i");
+    body.append(seg);
+    gaugeSegs.push(seg);
+  }
 }
 
 function setGauge(frac) {
   const f = Math.min(1, Math.max(0, frac));
-  $("gaugeValue").style.strokeDasharray = `${(f * gaugeLen).toFixed(1)} ${gaugeLen}`;
+  const lit = Math.round(f * SEGMENTS);
+  gaugeSegs.forEach((seg, i) => seg.classList.toggle("on", i < lit));
 }
 
 /* ---------- helpers ---------- */
@@ -121,7 +121,7 @@ function render(s) {
   $("socCard").dataset.level = level;
   $("socValue").textContent = s.soc;
   setGauge(s.soc / 100);
-  $("gaugeSvg").setAttribute("aria-label", `${t(lang, "gaugeAria")}: ${s.soc} %`);
+  $("battGauge").setAttribute("aria-label", `${t(lang, "gaugeAria")}: ${s.soc} %`);
 
   // state chip
   const chip = $("stateChip");
@@ -192,17 +192,22 @@ function renderCells(s) {
       const tile = document.createElement("div");
       tile.className = "cell";
       tile.innerHTML =
-        `<div class="cell-idx">${i + 1}</div>` +
+        `<div class="cell-top"><span class="cell-idx">${i + 1}</span><span class="cell-tag"></span></div>` +
         `<div class="cell-v"><span></span><small>V</small></div>` +
-        `<span class="cell-tag"></span>`;
+        `<span class="cell-bar"><i></i></span>`;
       grid.append(tile);
       state.cellTiles.push(tile);
     }
   }
   const minIdx = s.cellVoltageMinPos - 1;
   const maxIdx = s.cellVoltageMaxPos - 1;
+  const vmin = s.cellVoltageMin;
+  const span = Math.max(s.cellVoltageMax - vmin, 0.004);
   state.cellTiles.forEach((tile, i) => {
     tile.querySelector(".cell-v span").textContent = fmt(s.cellVoltages[i], 3);
+    // the mini bar encodes where this cell sits within the pack's spread
+    const rel = Math.min(1, Math.max(0, (s.cellVoltages[i] - vmin) / span));
+    tile.querySelector(".cell-bar i").style.width = `${(12 + 88 * rel).toFixed(1)}%`;
     tile.classList.toggle("is-min", i === minIdx);
     tile.classList.toggle("is-max", i === maxIdx && i !== minIdx);
     tile.querySelector(".cell-tag").textContent =
@@ -213,17 +218,16 @@ function renderCells(s) {
       dot = document.createElement("span");
       dot.className = "bal-dot";
       dot.title = t(lang, "balTooltip");
-      tile.append(dot);
+      tile.querySelector(".cell-top").insertBefore(dot, tile.querySelector(".cell-tag"));
     } else if (!balancing && dot) {
       dot.remove();
     }
   });
   $("cellCount").textContent = `(${s.cellCount})`;
   const diffMv = Math.round((s.cellVoltageMax - s.cellVoltageMin) * 1000);
-  $("cellStats").textContent =
-    `${t(lang, "minTag").toLowerCase()} ${fmt(s.cellVoltageMin, 3)} V · ` +
-    `${t(lang, "maxTag").toLowerCase()} ${fmt(s.cellVoltageMax, 3)} V · ` +
-    `${t(lang, "avgLabel")} ${fmt(s.cellVoltageAvg, 3)} V · Δ ${diffMv} mV`;
+  $("cellStats").innerHTML =
+    `<strong>Δ ${diffMv} mV</strong>` +
+    `<span>${t(lang, "avgLabel")} ${fmt(s.cellVoltageAvg, 3)} V</span>`;
 }
 
 function renderTemps(s) {
